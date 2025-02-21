@@ -1,0 +1,24 @@
+{% extends "layout.html" %} {% block content %}
+
+<div class="content">
+    <div class="back-home">
+        <a href="/" class="button">Back to Front Page</a>
+    </div>
+
+    <h2>Add or change your personal data</h2>
+
+    <form method="post">
+        Email:<input type="text" name="email" /><br />
+        First name:<input tye="text" name="first_name" /><br />
+        Last name:<input type="text" name="last_name" /><br />
+        Phone number:<input tye="number" name="phone" /><br />
+        <input type="submit" value="Update data" />
+    </form>
+
+    {% if done %}
+    <h3>Info updated!</h3>
+    <br />
+    {% endif %}
+</div>
+
+{% endblock %}

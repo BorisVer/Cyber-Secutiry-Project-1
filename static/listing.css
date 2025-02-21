@@ -1,0 +1,142 @@
+body {
+  margin: auto;
+  max-width:  500px;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  background: rgb(173, 173, 171);
+  text-align: center;
+}
+
+h2 {  
+  font-weight: 500;
+  font-size: 50px;
+  margin-top: 40px;
+  text-align: center;
+}
+
+h3 {
+  font-size: 35px;
+  margin-top: 30px;
+  text-align: center;
+  font-weight: 300;
+}
+
+.main-info, .technical-info {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 20px;
+}
+
+.main-info p, .technical-info p {
+  text-align: left;
+  padding-left: 10px;
+}
+
+.main-left, .main-right, .technical-left, .technical-right {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: rgb(194, 209, 156);
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  width: 48%;
+}
+
+.question {
+  text-decoration: dotted;
+}
+
+.answer {
+  text-decoration: solid;
+}
+
+.seller-info, .description-container {
+  padding-bottom: 20px;
+  margin-bottom: 40px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: rgb(194, 209, 156);
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  width: 100%;
+}
+
+
+/* Using https://www.w3schools.com/howto/howto_js_slideshow.asp as guide*/
+
+* {box-sizing:border-box}
+
+.slideshow-container {
+  position: relative;
+  margin: auto;
+  max-width: 100%; 
+  display: block;
+  margin-bottom: 10px;
+  align-self: center;
+  margin: 0 auto;
+  width: 100%; 
+  object-fit: cover;
+  object-position: 25% 25%; 
+}
+
+.mySlides {
+  display: none;
+  
+}
+
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.5s ease;
+  border-radius: 0 3px 3px 0;
+}
+
+
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+.prev {
+  left: 0;
+}
+
+.prev:hover, .next:hover {
+  background-color: rgba(63, 62, 62, 0.8);
+  opacity: 0.5;
+}
+
+.numbertext {
+  color: black;
+  text-shadow: #bbb;
+  font-size: 12px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 0;
+}
+
+.dot {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.active {
+  background-color: #717171;
+}
+
+
+.fade {
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}

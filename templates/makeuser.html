@@ -1,0 +1,49 @@
+{% extends "layout.html" %} {% block content %}
+
+<div class="content">
+    <div class="back-home">
+        <a href="/" class="button">Back to Front Page</a>
+    </div>
+
+    <h2>Make a new user</h2>
+
+    {% if error == 1 %}
+    <h3>The username is aleady taken</h3>
+    {% endif %} {% if error == 2 %}
+    <h3>The passwords did not match</h3>
+    {% endif %} {% if error == 3 %}
+    <h3>The passwords was too short</h3>
+    {% endif %}
+    <form action="/makeuser" method="POST">
+        <p>
+            Username:<br /><input
+                type="text"
+                name="username"
+                placeholder="At least 5 characters"
+            />
+        </p>
+
+        <p>
+            Password:<br /><input
+                type="password"
+                name="password"
+                minlength="5"
+                required
+                placeholder="At least 5 characters"
+            />
+        </p>
+
+        <p>
+            Password again:<br /><input
+                type="password"
+                name="passwordcheck"
+                minlength="5"
+                required
+                placeholder="At least 5 characters"
+            />
+        </p>
+
+        <input type="submit" value="Create" />
+    </form>
+</div>
+{% endblock %}
