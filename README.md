@@ -1,5 +1,7 @@
 # Cyber-Secutiry-Project-1
 
+
+
 Using Top 10 from 2021
 
 Flaw 1:
@@ -33,3 +35,20 @@ Broken Access Control
 - Changing other users data that should not be possible
 - Broken code in the routes.py /changeinfo
 - The fix is to not use the username = username that mistakenly runs the code for all users instead of the just the intended
+
+
+Flaw 4
+
+Sensitive Data Exposure
+
+- Data like passwords being stored as plain text instead of hashed
+- In routes.py /makeuser hash
+- Fix is simply to hash the passwords before saving them in the database
+
+
+Flaw 5
+
+Security Misconfiguration
+
+- Running the application in debug mode means users can see detailed error messages that can be used to exploit the application
+- In production the application should always be run with debug=False
