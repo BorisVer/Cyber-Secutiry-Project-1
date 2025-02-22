@@ -15,6 +15,15 @@
     <h3>The passwords was too short</h3>
     {% endif %}
     <form action="/makeuser" method="POST">
+        <!-- BEGINNING OF CSRF FLAW
+        Add a CSRF token to the form to make it secure,
+        withot the hidden input CSRF attacks are possible
+        -->
+        {#
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        #}
+        <!-- END OF CSRF FLAW -->
+
         <p>
             Username:<br /><input
                 type="text"

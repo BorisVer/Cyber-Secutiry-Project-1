@@ -125,7 +125,7 @@
     {% if session.username %}
     <p>Your logged in as {{ session.username }}</p>
     <a href="/logout">Log out</a><br />
-    <a href="/addinfo">Change info</a><br />
+    <a href="/changeinfo">Change info</a><br />
     <a href="/addcars">Add your car for sale</a> <br />
     {% else %}
     <p>Login to make a listing</p>
@@ -133,6 +133,12 @@
     <p style="color: red">{{ error }}</p>
     {% endif %}
     <form action="/login" method="POST">
+        <!-- Second example of flaw 1-->
+        {#
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        #}
+        <!-- End of example flaw 1 -->
+
         <p>
             Username:<br />
             <input type="text" name="username" />

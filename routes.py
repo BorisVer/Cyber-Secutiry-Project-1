@@ -11,7 +11,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 with app.app_context():
     # Check if the brands are added to the table 'allmodels'
     try:
-        db.session.execute(text("SELECT * FROM allBrands")).fetchall()[1]
+        db.session.execute(text("SELECT * FROM users")).fetchall()[1]
 
     except Exception as e:
         # If the table doesn't exist, create the tables and populate them
@@ -59,22 +59,43 @@ def index():
 
     return render_template("index.html", brands=brands, models=models, selected_brand=selected_brand)
 
+
+
 # Logic for loging in, hash_value to hide passwords in the data
 @app.route("/login",methods=["GET","POST"])
 def login():
     username = request.form["username"]
     password = request.form["password"]
-    sql = text("SELECT user_id, password FROM users WHERE username=:username")
-    result = db.session.execute(sql, {"username":username})
-    user = result.fetchone()
+    print(password)
+    # FLAW 2
+    # The example below is vulnerable to SQL injection
+    sql = text(f"SELECT user_id, password, username FROM users WHERE username='{username}' AND password='{password}'")
+    user = db.session.execute(sql).fetchone()
     if not user:
         error = "Username or password incorrect"
         return render_template("index.html", brands=brands, error=error)
     else:
-        hash_value = user.password
-    if check_password_hash(hash_value, password):
-        session["username"] = username
-    return redirect("/")
+        session["username"] = user.username
+        return redirect("/")
+
+    # The fixed version does not put the input straight into the SQL query and also checks
+    # the password separetly
+    #sql = text("SELECT user_id, password FROM users WHERE username=:username")
+    #result = db.session.execute(sql, {"username":username})
+    # user = result.fetchone()
+    # if not user:
+    #     error = "Username or password incorrect"
+    #     return render_template("index.html", brands=brands, error=error)
+
+    # hash_value = user.password
+
+    # if check_password_hash(hash_value, password):
+    #     print("user logged in as " + username)
+    #     session["username"] = username
+    #     return redirect("/")
+    # else:
+    #     error = "Username or password incorrect"
+    #     return render_template("index.html", brands=brands, error=error)
 
 # Removes the session login
 @app.route("/logout")
@@ -100,7 +121,13 @@ def makeuser():
             error = 3
             return render_template("makeuser.html", error=error)
         print(f"Creating user with username {username}")
-        hash_value = generate_password_hash(password)
+        # FLAW 4
+        # Sensible data exposure
+        # Passowrds are stored in plain text instead of hashed
+        # This is a security risk as if the database is compromised, all passwords are exposed
+        # The simple fix for this is hasing the password before storing it in the database
+        hash_value = password # generate_password_hash(password)
+
         sql = text("INSERT INTO users (username, password) VALUES (:username, :password)")
         db.session.execute(sql, {"username":username, "password":hash_value})
         db.session.commit()
@@ -109,20 +136,61 @@ def makeuser():
 
 # Brings to the add info page, where users can add contact info
 # TODO check all info and make user after creating user automatically move to this place, also show current info
-@app.route("/addinfo", methods=["GET","POST"])
+@app.route("/changeinfo", methods=["GET","POST"])
 def addinfo():
-    done = False
+    session_username = session.get("username")
+    sql_select = text("SELECT username, email, first_name, last_name, phone_number FROM users WHERE username = :username")
+    user_data = db.session.execute(sql_select, {"username": session_username}).fetchone()
+
+
     if request.method == "POST":
         email = request.form.get("email")
         first_name = request.form.get("first_name")
         last_name = request.form.get("last_name")
         phone = request.form.get("phone")
-        username = session["username"]
-        sql = text("UPDATE users SET email = :email, first_name = :first, last_name = :last, phone_number = :phone WHERE username = username")
-        db.session.execute(sql, {"email":email, "first":first_name, "last":last_name, "phone":phone, "username":username})
+        new_username = request.form.get("username")
+        new_password = request.form.get("password")
+
+        # FLAW 3
+        # Broken Access Control, user can change any user's information
+        sql_update = text(f"""
+            UPDATE users
+            SET username = '{new_username}',
+                email = :email,
+                first_name = :first,
+                last_name = :last,
+                phone_number = :phone,
+                password = '{new_password}'
+            WHERE username = username
+        """)
+        db.session.execute(sql_update, {"email": email, "first": first_name, "last": last_name, "phone": phone})
+
+        # Fix to this is to not use " WHERE username = username " but instead " WHERE username = :username "
+        # and then pass the username as a parameter to the execute function, like this:
+        #sql = text("""
+        #     UPDATE users
+        #     SET username = :new_username,
+        #         email = :email,
+        #         first_name = :first,
+        #         last_name = :last,
+        #         phone_number = :phone,
+        #         password = :password
+        #     WHERE username = :session_username
+        # """)
+        # db.session.execute(sql, {
+        #     "new_username": new_username,
+        #     "email": email,
+        #     "first": first_name,
+        #     "last": last_name,
+        #     "phone": phone,
+        #     "password": new_password,
+        #     "session_username": session_username
+        # })
+
         db.session.commit()
-        done = True
-    return render_template("addinfo.html", done=done)
+        return redirect("/")
+
+    return render_template("changeinfo.html", user=user_data)
 
 
 # Runs the search with brand, model and all the rest as link info
@@ -215,4 +283,9 @@ def listing(listing_id):
 
 
 if __name__ == "__main__":
+    # Fault 5
+    # The application is running in debug mode, meaning that the application will show detailed error messages
+    # These should not be shown to the user as they can be used to exploit the application
     app.run(debug=True)
+    # Instead the application should be run in production mode, like this:
+    # app.run(debug=False)

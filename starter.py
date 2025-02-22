@@ -39,13 +39,13 @@ def make_brands_models():
 
 
 def make_basics_database():
-
+    print("Making basic database")
     # Add the users, made with a random name generator into file
 
     with open("starterusers.json") as f:
         data = json.load(f)
         for user in data:
-            hash_value = generate_password_hash(user["password"])
+            hash_value = user["password"] # generate_password_hash(user["password"])
             sql = text("INSERT INTO users (username, password, email, first_name, last_name, phone_number) VALUES (:username, :password, :email, :first_name, :last_name, :phone_number)")
             db.session.execute(sql, {"username":user["username"], "password":hash_value, "email":user["email"], "first_name":user["first_name"], "last_name":user["last_name"], "phone_number":user["phone_number"]})
             db.session.commit()
