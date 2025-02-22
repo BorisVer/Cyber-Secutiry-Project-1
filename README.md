@@ -1,6 +1,13 @@
 # Cyber-Secutiry-Project-1
 
+## How to Run
 
+### 1. Install Dependencies
+Ensure you have Python installed, then install the required dependencies:  
+
+```bash
+pip install -r requirements.txt
+```
 
 Using Top 10 from 2021
 
