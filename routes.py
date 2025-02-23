@@ -165,7 +165,7 @@ def addinfo():
         """)
         db.session.execute(sql_update, {"email": email, "first": first_name, "last": last_name, "phone": phone})
 
-        # Fix to this is to not use " WHERE username = username " but instead " WHERE username = :username "
+        # Fix to this is to not use " WHERE username = username " but instead " WHERE username = session_username "
         # and then pass the username as a parameter to the execute function, like this:
         #sql = text("""
         #     UPDATE users
