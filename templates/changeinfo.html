@@ -8,7 +8,8 @@
     <h2>Change Your Personal Data</h2>
 
     <form method="post">
-        <!-- Pre-filled with the known data from the database -->
+        <!-- Fix for flaw 3 is to remove the hidden input -->
+        <input type="hidden" name="target_user" value="{{ user.username }}" />
         Username:
         <input type="text" name="username" value="{{ user.username }}" /><br />
         Email: <input type="text" name="email" value="{{ user.email }}" /><br />
@@ -29,9 +30,10 @@
         Change Password:
         <input
             type="password"
-            name="new_password"
+            name="password"
             placeholder="New password"
         /><br />
+
         <input type="submit" value="Update Data" />
     </form>
 </div>

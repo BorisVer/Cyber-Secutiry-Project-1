@@ -20,7 +20,7 @@ with app.app_context():
         starter.make_basics_database()
 
 
-print("Using database:", app.config['SQLALCHEMY_DATABASE_URI'])
+
 
 # Get all brands (assumes limiter.get_brands() returns the needed data)
 with app.app_context():
@@ -155,17 +155,17 @@ def addinfo():
         # Broken Access Control, user can change any user's information
         sql_update = text(f"""
             UPDATE users
-            SET username = '{new_username}',
+            SET username = :username,
                 email = :email,
                 first_name = :first,
                 last_name = :last,
                 phone_number = :phone,
-                password = '{new_password}'
-            WHERE username = username
+                password = :password
+            WHERE username = '{request.form.get("target_user")}'
         """)
-        db.session.execute(sql_update, {"email": email, "first": first_name, "last": last_name, "phone": phone})
+        db.session.execute(sql_update, {"email": email, "first": first_name, "last": last_name, "phone": phone, "password": new_password, "username": new_username})
 
-        # Fix to this is to not use " WHERE username = username " but instead " WHERE username = :username "
+        # Fix to this is to not use " WHERE username = '{request.form.get("target_user")}' " but instead " WHERE username = :username "
         # and then pass the username as a parameter to the execute function, like this:
         #sql = text("""
         #     UPDATE users
