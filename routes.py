@@ -165,7 +165,11 @@ def addinfo():
         """)
         db.session.execute(sql_update, {"email": email, "first": first_name, "last": last_name, "phone": phone, "password": new_password, "username": new_username})
 
+<<<<<<< HEAD
         # Fix to this is to not use " WHERE username = '{request.form.get("target_user")}' " but instead " WHERE username = :username "
+=======
+        # Fix to this is to not use " WHERE username = username " but instead " WHERE username = session_username "
+>>>>>>> 4646c1fa1ff1504279250c5fb39bbf2b5f1f5896
         # and then pass the username as a parameter to the execute function, like this:
         #sql = text("""
         #     UPDATE users
